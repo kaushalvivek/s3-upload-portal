@@ -53,7 +53,9 @@ def logout():
 # after upload feedback
 @app.route('/done')
 def done():
-    return session['upload_message']
+    status = session.get('upload_message')['status']
+    get_url = session.get('upload_message')['get_url']
+    return render_template('done.html', status=status, get_url=get_url)
 
 if __name__ == "__main__":
   app.run(debug=True)
