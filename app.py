@@ -19,36 +19,41 @@ Session(app)
 def index():
     # check if logged in, else direct to login page
     if 'token' in session and session.get('token') == SECRET_KEY:
-        session['token'] = SECRET_KEY
         if request.method=='GET':
             return render_template('index.html')
 
-        if request.method=='POST':
-            return upload_to_s3(request.files['file'])
+        elif request.method=='POST':
+            session['upload_message'] = upload_to_s3(request.files['file'])
+            return redirect('/done')
     else:
-        session['token'] = SECRET_KEY
-        return render_template('index.html')
-        # return redirect('/login_page')
+        return redirect('/login_page')
 
 # route to login page, redirects to home if logged in
-@app.route('/login_page')
+@app.route('/login_page', methods=['GET','POST'])
 def login():
-    # if logged in, redirect to 
+    # if logged in, redirect to home
     if 'token' in session and session.get('token') == SECRET_KEY:
         return redirect('/')
     else:
-        # return render_template('login.html')
-        return render_template('login.html')
-    return 200
+        if request.method=='GET':
+            return render_template('login.html', error=False)
+
+        elif request.method=='POST':
+            if request.form['password'] == PASSWORD:
+                session['token']=SECRET_KEY
+                return redirect('/')
+            else:
+                return render_template('login.html', error=True)
 
 @app.route('/logout')
 def logout():
-    return 200
+    session.pop('token')
+    return redirect('/login_page')
 
 # after upload feedback
 @app.route('/done')
 def done():
-    return 200
+    return session['upload_message']
 
 if __name__ == "__main__":
   app.run(debug=True)
