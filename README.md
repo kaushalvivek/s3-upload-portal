@@ -71,4 +71,4 @@ Create issues for suggestions, bugs, feature requests and feel free to extend th
 MIT License.
 
 ## Author
-[@kauhalvivek](https://vivekkaushal.com)
+[@kaushalvivek](https://vivekkaushal.com)
